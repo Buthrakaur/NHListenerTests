@@ -1,21 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using NHibernate.Cfg;
 using NHibernate.Engine;
 using NHibernate.Event;
-using NHibernate.Event.Default;
-using NHibernate.Persister.Entity;
 
 namespace NHListenerTest
 {
-	public interface IModificationTimeListener
-	{
-		Func<DateTime> CurrentDateTimeProvider { get; set; }
-		void Register(Configuration cfg);
-	}
-
-	public class SetModificationTimeFlushEntityEventListener : IFlushEntityEventListener, IModificationTimeListener
+	public class SetModificationTimeFlushEntityEventListener : IFlushEntityEventListener
 	{
 		public SetModificationTimeFlushEntityEventListener()
 		{
@@ -35,11 +26,9 @@ namespace NHListenerTest
 
 		public void OnFlushEntity(FlushEntityEvent @event)
 		{
-			if (@event.EntityEntry.Status != Status.Deleted &&
-				(!@event.EntityEntry.ExistsInDatabase || @event.Session.IsDirtyEntity(@event.Entity)))
-			{
-				SetModificationDateIfPossible(@event.Entity);
-			}
+			if (@event.EntityEntry.Status == Status.Deleted) return;
+
+			SetModificationDateIfPossible(@event.Entity);
 		}
 
 		public void Register(Configuration cfg)
