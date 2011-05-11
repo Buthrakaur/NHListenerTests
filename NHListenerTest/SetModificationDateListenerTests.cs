@@ -103,7 +103,7 @@ namespace NHListenerTest
 				})
 				.ExposeConfiguration(cfg =>
 				{
-					listener.Register(cfg.EventListeners);
+					listener.Register(cfg);
 					config = cfg;
 				})
 				.BuildSessionFactory();

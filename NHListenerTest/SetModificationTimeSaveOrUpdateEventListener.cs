@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using NHibernate.Cfg;
 using NHibernate.Engine;
 using NHibernate.Event;
 using NHibernate.Event.Default;
@@ -11,7 +12,7 @@ namespace NHListenerTest
 	public interface IModificationTimeListener
 	{
 		Func<DateTime> CurrentDateTimeProvider { get; set; }
-		void Register(EventListeners listeners);
+		void Register(Configuration cfg);
 	}
 
 	public class SetModificationTimeSaveOrUpdateEventListener : DefaultSaveOrUpdateEventListener, IModificationTimeListener
@@ -56,8 +57,9 @@ namespace NHListenerTest
 			return base.PerformSaveOrUpdate(@event);
 		}
 
-		public void Register(EventListeners listeners)
+		public void Register(Configuration cfg)
 		{
+			var listeners = cfg.EventListeners;
 			listeners.SaveEventListeners =
 				listeners.SaveEventListeners
 					.NullToEmpty()
@@ -105,8 +107,9 @@ namespace NHListenerTest
 			base.OnFlushEntity(@event);
 		}
 
-		public void Register(EventListeners listeners)
+		public void Register(Configuration cfg)
 		{
+			var listeners = cfg.EventListeners;
 			listeners.FlushEntityEventListeners = listeners.FlushEntityEventListeners
 				.NullToEmpty()
 				.Append(this)
