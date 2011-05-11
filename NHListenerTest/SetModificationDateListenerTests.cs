@@ -87,7 +87,10 @@ namespace NHListenerTest
 
 		public SetModificationDateIntegrationTests()
 		{
-			listener = new SetModificationTimeFlushEntityEventListener //SetModificationTimeSaveOrUpdateEventListener
+			listener = new ModificationTimeLoggingInterceptor()
+							//SetModificationTimeFlushEntityEventListener 
+							//SetModificationTimeSaveOrUpdateEventListener
+
 				{
 					CurrentDateTimeProvider = () => defaultDate
 				};
@@ -149,6 +152,24 @@ namespace NHListenerTest
 			t = session.Get<Thing>(1L);
 			t.LastModified = DateTime.Now.AddYears(-10);
 			session.Update(t);
+
+			session.Flush();
+
+			Assert.Equal(new DateTime(2001, 1, 1), t.LastModified);
+		}
+
+		[Fact]
+		public void LastModified_Should_BeSetOnImplicitUpdate()
+		{
+			var t = new Thing { Id = 1 };
+			session.Save(t);
+
+			session.Flush();
+			session.Clear();
+
+			listener.CurrentDateTimeProvider = () => new DateTime(2001, 1, 1);
+			t = session.Get<Thing>(1L);
+			t.LastModified = DateTime.Now.AddYears(-10);
 
 			session.Flush();
 
