@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Entities.cs" />
     <Compile Include="IAuditable.cs" />
+    <Compile Include="ICurrentPrincipalIdProvider.cs" />
     <Compile Include="Mappings.cs" />
     <Compile Include="SetModificationTimeFlushEntityEventListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

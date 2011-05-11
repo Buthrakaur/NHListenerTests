@@ -10,6 +10,14 @@ using Xunit;
 
 namespace NHListenerTest
 {
+    public class FakeCurrentPrincipalProvider : ICurrentPrincipalIdProvider
+    {
+        public long GetCurrentPrincipalId()
+        {
+            return 1;
+        }
+    }
+
     public class SetModifiedByTests : IDisposable
     {
         private readonly ISessionFactory sessionFactory;
@@ -20,10 +28,7 @@ namespace NHListenerTest
         public SetModifiedByTests()
         {
             XmlConfigurator.Configure();
-            listener = new SetModifiedByListener()
-            {
-                CurrentUserIdProvider = () => 1
-            };
+            listener = new SetModifiedByListener(new FakeCurrentPrincipalProvider());
 
             Configuration config = null;
             sessionFactory = Fluently.Configure()

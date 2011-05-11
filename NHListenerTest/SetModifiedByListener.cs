@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Engine;
@@ -9,14 +8,19 @@ namespace NHListenerTest
 {
     public class SetModifiedByListener : IFlushEntityEventListener, ISaveOrUpdateEventListener 
     {
-        public Func<long> CurrentUserIdProvider { get; set; }
+        private readonly ICurrentPrincipalIdProvider currentPrincipalIdProvider;
+
+        public SetModifiedByListener(ICurrentPrincipalIdProvider currentPrincipalIdProvider)
+        {
+            this.currentPrincipalIdProvider = currentPrincipalIdProvider;
+        }
 
         private void SetModificationDateIfPossible(object entity, ISession session)
         {
             var trackable = entity as IAuditable;
             if (trackable != null)
             {
-                trackable.ModifiedBy = session.Load<User>(CurrentUserIdProvider());
+                trackable.ModifiedBy = session.Load<User>(currentPrincipalIdProvider.GetCurrentPrincipalId());
             }
         }
 
