@@ -17,7 +17,7 @@ namespace NHListenerTest
 
 		private void SetModificationDateIfPossible(object entity)
 		{
-			var trackable = entity as ITrackModificationDate;
+			var trackable = entity as IAuditable;
 			if (trackable != null)
 			{
 				trackable.LastModified = CurrentDateTimeProvider();
