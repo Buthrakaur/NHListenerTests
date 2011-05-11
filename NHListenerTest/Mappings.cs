@@ -8,7 +8,7 @@ namespace NHListenerTest
 		{
 			Id(x => x.Id).GeneratedBy.Assigned();
 			Map(x => x.LastModified);
-		    References(x => x.LastModifiedBy);
+		    References(x => x.ModifiedBy);
 			HasMany(x => x.RelatedThings)
 				.Cascade.All()
                 .Inverse()

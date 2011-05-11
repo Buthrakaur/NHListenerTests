@@ -5,11 +5,11 @@ using System.Text;
 
 namespace NHListenerTest
 {
-	public class Thing : ITrackModificationDate
+	public class Thing : IAuditable
 	{
 		public virtual long Id { get; set; }
 		public virtual DateTime LastModified { get; set; }
-        public virtual User LastModifiedBy { get; set; }
+        public virtual User ModifiedBy { get; set; }
 	    private IList<RelatedThing> relatedThings = new List<RelatedThing>();
 		public virtual IEnumerable<RelatedThing> RelatedThings { get { return relatedThings; } }
 

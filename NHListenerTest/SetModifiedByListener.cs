@@ -7,16 +7,16 @@ using NHibernate.Event;
 
 namespace NHListenerTest
 {
-    public class SetLastModifiedByFlushEntityEventListener : IFlushEntityEventListener, ISaveOrUpdateEventListener 
+    public class SetModifiedByListener : IFlushEntityEventListener, ISaveOrUpdateEventListener 
     {
         public Func<long> CurrentUserIdProvider { get; set; }
 
         private void SetModificationDateIfPossible(object entity, ISession session)
         {
-            var trackable = entity as ITrackModificationDate;
+            var trackable = entity as IAuditable;
             if (trackable != null)
             {
-                trackable.LastModifiedBy = session.Load<User>(CurrentUserIdProvider());
+                trackable.ModifiedBy = session.Load<User>(CurrentUserIdProvider());
             }
         }
 
@@ -33,6 +33,7 @@ namespace NHListenerTest
             listeners.FlushEntityEventListeners = new IFlushEntityEventListener[] { this }
                 .Concat(listeners.FlushEntityEventListeners)
                 .ToArray();
+
             listeners.SaveOrUpdateEventListeners = new ISaveOrUpdateEventListener[] { this }
                 .Concat(listeners.SaveOrUpdateEventListeners)
                 .ToArray();

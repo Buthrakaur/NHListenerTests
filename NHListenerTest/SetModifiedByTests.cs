@@ -10,17 +10,17 @@ using Xunit;
 
 namespace NHListenerTest
 {
-    public class SetLastModifiedByIntegrationTests : IDisposable
+    public class SetModifiedByTests : IDisposable
     {
         private readonly ISessionFactory sessionFactory;
         private readonly ISession session;
-        private SetLastModifiedByFlushEntityEventListener listener;
+        private SetModifiedByListener listener;
         private readonly DateTime defaultDate = new DateTime(2000, 1, 1);
 
-        public SetLastModifiedByIntegrationTests()
+        public SetModifiedByTests()
         {
             XmlConfigurator.Configure();
-            listener = new SetLastModifiedByFlushEntityEventListener()
+            listener = new SetModifiedByListener()
             {
                 CurrentUserIdProvider = () => 1
             };
@@ -66,7 +66,7 @@ namespace NHListenerTest
                 var t = new Thing { Id = 1 };
                 session.SaveOrUpdate(t);
                 tx.Commit();
-                Assert.Equal(1, t.LastModifiedBy.Id);
+                Assert.Equal(1, t.ModifiedBy.Id);
             }
         }
 

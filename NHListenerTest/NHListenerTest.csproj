@@ -62,13 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities.cs" />
-    <Compile Include="ITrackModificationDate.cs" />
+    <Compile Include="IAuditable.cs" />
     <Compile Include="Mappings.cs" />
     <Compile Include="SetModificationTimeFlushEntityEventListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetModificationDateListenerTests.cs" />
-    <Compile Include="SetLastModifiedByFlushEntityEventListener.cs" />
-    <Compile Include="SetLastModifiedByIntegrationTests.cs" />
+    <Compile Include="SetModifiedByListener.cs" />
+    <Compile Include="SetModifiedByTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
