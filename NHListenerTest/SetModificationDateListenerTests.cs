@@ -87,10 +87,7 @@ namespace NHListenerTest
 
 		public SetModificationDateIntegrationTests()
 		{
-			listener = new ModificationTimeLoggingInterceptor()
-							//SetModificationTimeFlushEntityEventListener 
-							//SetModificationTimeSaveOrUpdateEventListener
-
+			listener =	new SetModificationTimeFlushEntityEventListener()
 				{
 					CurrentDateTimeProvider = () => defaultDate
 				};
