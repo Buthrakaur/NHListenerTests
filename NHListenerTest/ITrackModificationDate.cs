@@ -8,5 +8,8 @@ namespace NHListenerTest
 	public interface ITrackModificationDate
 	{
 		DateTime LastModified { get; set; }
+        User LastModifiedBy { get; set; }
 	}
+
+    
 }

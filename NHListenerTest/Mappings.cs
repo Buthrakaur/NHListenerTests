@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentNHibernate.Mapping;
+﻿using FluentNHibernate.Mapping;
 
 namespace NHListenerTest
 {
@@ -12,11 +8,22 @@ namespace NHListenerTest
 		{
 			Id(x => x.Id).GeneratedBy.Assigned();
 			Map(x => x.LastModified);
+		    References(x => x.LastModifiedBy);
 			HasMany(x => x.RelatedThings)
 				.Cascade.All()
+                .Inverse()
 				.Access.ReadOnlyPropertyThroughCamelCaseField();
 		}
 	}
+
+    public class UserMap : ClassMap<User>
+    {
+        public UserMap()
+        {
+            Id(x => x.Id).GeneratedBy.Assigned();
+            Map(x => x.Name);
+        }
+    }
 
 	public class RelatedThingMap : ClassMap<RelatedThing>
 	{

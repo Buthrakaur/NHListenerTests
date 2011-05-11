@@ -9,7 +9,8 @@ namespace NHListenerTest
 	{
 		public virtual long Id { get; set; }
 		public virtual DateTime LastModified { get; set; }
-		private IList<RelatedThing> relatedThings = new List<RelatedThing>();
+        public virtual User LastModifiedBy { get; set; }
+	    private IList<RelatedThing> relatedThings = new List<RelatedThing>();
 		public virtual IEnumerable<RelatedThing> RelatedThings { get { return relatedThings; } }
 
 		public Thing()
@@ -36,4 +37,10 @@ namespace NHListenerTest
 		public virtual string Name { get; set; }
 		public virtual Thing Parent { get; set; }
 	}
+
+    public class User
+    {
+        public virtual long Id { get; set; }
+        public virtual string Name { get; set; }
+    }
 }
