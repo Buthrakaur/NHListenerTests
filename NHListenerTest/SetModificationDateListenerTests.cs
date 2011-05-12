@@ -35,6 +35,7 @@ namespace NHListenerTest
 				{
 					listener.Register(cfg);
 					config = cfg;
+					cfg.SetProperty("show_sql", "true");
 				})
 				.BuildSessionFactory();
 
