@@ -36,4 +36,21 @@ namespace NHListenerTest
 			Map(x => x.SomeText);
 		}
 	}
+
+    public class SomeThingJoinedMap : ClassMap<SomeThingJoined>
+    {
+        public SomeThingJoinedMap()
+        {
+            Id(x => x.SomeThingId);
+            Map(x => x.SomeThingValue);
+
+            Join("SomeThingJoin", m =>
+            {
+                m.Fetch.Join();
+                m.KeyColumn("SomeThingId");
+                m.Map(x => x.SomeThingJoinValue);
+                m.Map(x => x.LastModified);
+            });
+        }
+    }
 }

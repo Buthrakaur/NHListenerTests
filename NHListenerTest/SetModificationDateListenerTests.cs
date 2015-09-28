@@ -5,24 +5,41 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using Xunit;
+using log4net;
 
 namespace NHListenerTest
 {
+
+    /// <summary>
+    /// Uncomment/Comment the listener to see it working (all green with SetModificationTimeFlushEntityEventListener)
+    /// </summary>
 	public class SetModificationDateIntegrationTests : IDisposable
 	{
 		private readonly ISessionFactory sessionFactory;
 		private readonly ISession session;
-		private SetModificationTimeFlushEntityEventListener listener;
-		private readonly DateTime defaultDate = new DateTime(2000, 1, 1);
+		private LeakySimpleListener listener;
+        //private SetModificationTimeFlushEntityEventListener listener;
+        private readonly DateTime defaultDate = new DateTime(2000, 1, 1);
 
-		public SetModificationDateIntegrationTests()
+        private static readonly ILog log = LogManager.GetLogger(typeof(SetModificationDateIntegrationTests));
+
+        public SetModificationDateIntegrationTests()
 		{
-			listener =	new SetModificationTimeFlushEntityEventListener()
-				{
-					CurrentDateTimeProvider = () => defaultDate
-				};
+            log4net.Config.XmlConfigurator.Configure();
 
-			Configuration config = null;
+            // working Listener
+            //listener = new SetModificationTimeFlushEntityEventListener()
+            //{
+            //    CurrentDateTimeProvider = () => defaultDate
+            //};
+
+            //Tests with inheritance - structure and join-tables will fail
+            listener = new LeakySimpleListener()
+            {
+                CurrentDateTimeProvider = () => defaultDate
+            };
+
+            Configuration config = null;
 			sessionFactory = Fluently.Configure()
 				.Database(SQLiteConfiguration.Standard.InMemory)
 				.Mappings(m =>
@@ -30,12 +47,14 @@ namespace NHListenerTest
 					m.FluentMappings.Add<ThingMap>();
 					m.FluentMappings.Add<InheritedThingMap>();
 					m.FluentMappings.Add<RelatedThingMap>();
-				})
+                    m.FluentMappings.Add<SomeThingJoinedMap>();
+                })
 				.ExposeConfiguration(cfg =>
 				{
 					listener.Register(cfg);
 					config = cfg;
 					cfg.SetProperty("show_sql", "true");
+                    cfg.SetProperty("format_sql", "true");
 				})
 				.BuildSessionFactory();
 
@@ -157,5 +176,35 @@ namespace NHListenerTest
 
 			Assert.Equal(new DateTime(2001, 1, 1), t.LastModified);
 		}
-	}
+
+        [Fact]
+        public void JoinedThing_LastModified_Should_BeSetOnJoinedObject()
+        {
+            var t = new SomeThingJoined()
+            {
+                SomeThingId = 1,
+                SomeThingValue = "val1",
+                SomeThingJoinValue = "val2"
+            };
+
+            session.Save(t);
+
+            session.Flush();
+            session.Clear();
+
+            listener.CurrentDateTimeProvider = () => new DateTime(2001, 1, 1);
+
+            var x = session.Get<SomeThingJoined>(1L);
+            x.SomeThingValue = "val1change";
+
+            session.Update(x);
+
+            session.Flush();
+            session.Clear();
+
+            var y = session.Get<SomeThingJoined>(1L);
+
+            Assert.Equal(new DateTime(2001, 1, 1), y.LastModified);
+        }
+    }
 }

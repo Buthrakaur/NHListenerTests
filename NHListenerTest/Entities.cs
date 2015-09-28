@@ -5,35 +5,58 @@ using System.Text;
 
 namespace NHListenerTest
 {
-	public class Thing : ITrackModificationDate
-	{
-		public virtual long Id { get; set; }
-		public virtual DateTime LastModified { get; set; }
-		private IList<RelatedThing> relatedThings = new List<RelatedThing>();
-		public virtual IEnumerable<RelatedThing> RelatedThings { get { return relatedThings; } }
+    public class Thing : ITrackModificationDate
+    {
+        public virtual long Id { get; set; }
+        public virtual DateTime LastModified { get; set; }
+        private IList<RelatedThing> relatedThings = new List<RelatedThing>();
+        public virtual IEnumerable<RelatedThing> RelatedThings { get { return relatedThings; } }
 
-		public Thing()
-		{
-			AddRelatedThing(1, "related 1");
-		}
+        public Thing()
+        {
+            AddRelatedThing(1, "related 1");
+        }
 
-		public virtual RelatedThing AddRelatedThing(long id, string name)
-		{
-			var t = new RelatedThing { Id = id, Name = name, Parent = this };
-			relatedThings.Add(t);
-			return t;
-		}
-	}
+        public virtual RelatedThing AddRelatedThing(long id, string name)
+        {
+            var t = new RelatedThing { Id = id, Name = name, Parent = this };
+            relatedThings.Add(t);
+            return t;
+        }
+    }
 
-	public class InheritedThing : Thing
-	{
-		public virtual string SomeText { get; set; }
-	}
+    public class InheritedThing : Thing
+    {
+        public virtual string SomeText { get; set; }
+    }
 
-	public class RelatedThing
-	{
-		public virtual long Id { get; set; }
-		public virtual string Name { get; set; }
-		public virtual Thing Parent { get; set; }
-	}
+    public class RelatedThing
+    {
+        public virtual long Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual Thing Parent { get; set; }
+    }
+
+    //public class SomeThing : ITrackModificationDate
+    //{
+    //    public virtual long SomeThingId { get; set; }
+    //    public virtual string SomeThingValue { get; set; }
+    //    public virtual DateTime LastModified { get; set; }
+    //}
+
+    //public class SomeThingJoin : ITrackModificationDate
+    //{
+    //    public virtual long SomeThingJoinId { get; set; }
+    //    public virtual string SomeThingJoinValue { get; set; }
+    //    public virtual DateTime LastModified { get; set; }
+    //    public virtual long SomeThingId { get; set; }
+    //}
+
+    public class SomeThingJoined : ITrackModificationDate
+    {
+        public virtual long SomeThingId { get; set; }
+        public virtual string SomeThingValue { get; set; }
+        public virtual string SomeThingJoinValue { get; set; }
+        public virtual DateTime LastModified { get; set; }
+    }
 }
